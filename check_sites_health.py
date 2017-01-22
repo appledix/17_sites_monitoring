@@ -16,8 +16,8 @@ def get_urls_location_from_terminal():
 
 def load_urls(filepath):
     with open(filepath, 'r') as text_file:
-        data = text_file.read()
-    return re.findall(r'.+', data)
+        text = text_file.read()
+    return re.findall(r'.+', text)
 
 def prettify_urls(urls):
     urls = ['http://{}'.format(u) if not re.match(r'https?://', u) else u for u in urls]
