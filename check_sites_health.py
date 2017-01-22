@@ -69,16 +69,19 @@ def main():
         print('{}) {}'.format(index, url))
         status_code = get_http_status_code(url)
         if status_code:
+            verdict = ('OK' if (status_code == 200) else 'WARNING!')
             print('• HTTP status code: {}({})'.format(
                 status_code,
-                ('OK' if (status_code == 200) else 'WARNING!')))
+                verdict))
             expiration_date = get_domain_expiration_date(extract_domain(url))
             if expiration_date:
                 days_until_expiration = get_days_until_expiration(expiration_date)
+                verdict = ('OK' 
+                    if is_remained_time_more_than_month(days_until_expiration)
+                    else 'WARNING!')
                 print('• Days until expiration date: {}({})'.format(
                     days_until_expiration,
-                    ('OK' if is_remained_time_more_than_month(days_until_expiration) 
-                          else 'WARNING!')))
+                    verdict))
             else:
                 print('Failed to get domain expiration date.')
         else:
