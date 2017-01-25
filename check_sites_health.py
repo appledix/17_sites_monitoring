@@ -61,32 +61,45 @@ def is_remained_time_more_than_month(days_until_expiration):
     days_in_month = 30
     return days_until_expiration > 30
 
+def get_info_about_status_code(status_code):
+    if status_code:
+        verdict = ('OK' if (status_code == 200) else 'WARNING!')
+        return 'HTTP status code: {}({})'.format(status_code, verdict)
+    else:
+        return 'Failed to get HTTP status code.'
+
+def get_info_about_expiration_date(expiration_date):
+    if expiration_date:
+        days_until_expiration = get_days_until_expiration(expiration_date)
+        verdict = ('OK' 
+                    if is_remained_time_more_than_month(days_until_expiration)
+                    else 'WARNING!')
+        return 'Days until expiration date: {}({})'.format(
+                    days_until_expiration,
+                    verdict)
+    else:
+        return 'Failed to get domain expiration date.'
+
+def get_url_info(url):
+    status_code = get_http_status_code(url)
+    exp_date = get_domain_expiration_date(extract_domain(url)) \
+                      if status_code else None
+    return {'status code':get_info_about_status_code(status_code),
+            'expiration date':get_info_about_expiration_date(exp_date)}
+
 
 def main():
     urls_location = get_urls_location_from_terminal()
     urls = prettify_urls(load_urls(urls_location))
     for index, url in enumerate(urls, 1):
         print('{}) {}'.format(index, url))
-        status_code = get_http_status_code(url)
-        if status_code:
-            verdict = ('OK' if (status_code == 200) else 'WARNING!')
-            print('• HTTP status code: {}({})'.format(
-                status_code,
-                verdict))
-            expiration_date = get_domain_expiration_date(extract_domain(url))
-            if expiration_date:
-                days_until_expiration = get_days_until_expiration(expiration_date)
-                verdict = ('OK' 
-                    if is_remained_time_more_than_month(days_until_expiration)
-                    else 'WARNING!')
-                print('• Days until expiration date: {}({})'.format(
-                    days_until_expiration,
-                    verdict))
-            else:
-                print('Failed to get domain expiration date.')
-        else:
-            print('Failed to get HTTP status code.')
+        url_info = get_url_info(url)
+        print(' • {}'.format(url_info['status code']))
+        print(' • {}'.format(url_info['expiration date']))
 
 
 if __name__ == '__main__':
     main()
+
+
+
