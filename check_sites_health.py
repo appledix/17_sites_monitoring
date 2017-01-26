@@ -25,7 +25,7 @@ def prettify_urls(urls):
 def get_http_status_code(url):
     request_timeout = 5
     try:
-        request = requests.head(url, timeout=request_timeout)
+        request = requests.get(url, timeout=request_timeout)
     except (requests.exceptions.ConnectionError, 
             requests.exceptions.Timeout,
             requests.packages.urllib3.exceptions.ReadTimeoutError,
