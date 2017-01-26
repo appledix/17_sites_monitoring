@@ -1,3 +1,2 @@
 requests==2.11.1
 python-whois==0.6.4
-tld==0.7.6

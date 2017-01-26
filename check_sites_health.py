@@ -2,10 +2,10 @@ import argparse
 from collections import OrderedDict
 from datetime import datetime
 import re
+import urllib
 
 import requests
 from whois import whois
-from tld import get_tld
 
 
 def get_urls_location_from_terminal():
@@ -51,7 +51,8 @@ def extract_domain(url):
     elif url.endswith('edu.ru'):
         return 'edu.ru'
     else:
-        return get_tld(url)
+        return urllib.parse.urlparse(url).netloc
+
 
 def get_days_until_expiration(expiration_date):
     now = datetime.now()
