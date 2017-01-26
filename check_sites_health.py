@@ -52,7 +52,7 @@ def get_domain_expiration_date(domain):
     domain_info = whois(domain)
     exp_date = domain_info.expiration_date
     if not exp_date:
-        domain = get_rid_of_the_subdomain(domain)
+        domain = remove_subdomain(domain)
         return (get_domain_expiration_date(domain) if domain else None)
     return prettify_expiration_date(exp_date)
 
