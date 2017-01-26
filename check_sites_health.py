@@ -35,24 +35,26 @@ def get_http_status_code(url):
     else:
         return request.status_code
 
-def get_domain_expiration_date(domain_name):
-    domain = whois(domain_name)
-    expiration_date = domain.expiration_date
-    if isinstance(expiration_date, list):
-        expiration_date = expiration_date[0]
-    if isinstance(expiration_date, str):
+def remove_subdomain(domain):
+    domain_levels = domain.split('.')
+    if len(domain_levels) > 1:
+        return '.'.join(domain_levels[1:])
+
+def prettify_expiration_date(exp_date):
+    if isinstance(exp_date, list):
+        exp_date = exp_date[0]
+    if isinstance(exp_date, str):
         date_format = "%Y-%m-%dT%H:%M:%S.0Z"
-        expiration_date = datetime.strptime(expiration_date, date_format)
-    return expiration_date
+        exp_date = datetime.strptime(exp_date, date_format)
+    return exp_date
 
-def extract_domain(url):
-    if url.endswith('gov.ru'):
-        return 'gov.ru'
-    elif url.endswith('edu.ru'):
-        return 'edu.ru'
-    else:
-        return urllib.parse.urlparse(url).netloc
-
+def get_domain_expiration_date(domain):
+    domain_info = whois(domain)
+    exp_date = domain_info.expiration_date
+    if not exp_date:
+        domain = get_rid_of_the_subdomain(domain)
+        return (get_domain_expiration_date(domain) if domain else None)
+    return prettify_expiration_date(exp_date)
 
 def get_days_until_expiration(expiration_date):
     now = datetime.now()
@@ -80,6 +82,9 @@ def get_info_about_expiration_date(expiration_date):
                     verdict)
     else:
         return 'Failed to get domain expiration date.'
+
+def extract_domain(url):
+    return urllib.parse.urlparse(url).netloc
 
 def get_url_info(url):
     status_code = get_http_status_code(url)
