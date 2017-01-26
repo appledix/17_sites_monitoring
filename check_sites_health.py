@@ -1,5 +1,4 @@
 import argparse
-from collections import OrderedDict
 from datetime import datetime
 import re
 import urllib
