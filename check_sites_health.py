@@ -21,7 +21,7 @@ def load_urls(filepath):
 
 def prettify_urls(urls):
     urls = ['http://{}'.format(u) if not re.match(r'https?://', u) else u for u in urls]
-    return list(OrderedDict.fromkeys(urls))
+    return set(urls)
 
 def get_http_status_code(url):
     request_timeout = 5
